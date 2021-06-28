@@ -19,6 +19,7 @@ Using a combination of Rhino, Grasshopper, you will learn how to develop a param
 Automation is a power tool in manufacturing and cheaper and safer robots are now available for artists and designer to explore. ....
 
 ## Examples
+* http://eduardochamorro.github.io/beansreels/portfolio/lightpainting.html
 
 
 ## Schedule
