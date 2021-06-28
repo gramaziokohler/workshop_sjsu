@@ -20,7 +20,10 @@ Automation is a power tool in manufacturing and cheaper and safer robots are now
 
 ## Examples
 * http://eduardochamorro.github.io/beansreels/portfolio/lightpainting.html
-
+* http://lightpaintingblog.com/using-virtual-reality-to-augment-light-drawing/
+* http://mkmra2.blogspot.com/2017/01/robotic-painting-with-line-of-lights.html
+* https://www.idz.ro/rlp/
+* 
 
 ## Schedule
 
