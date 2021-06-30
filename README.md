@@ -28,6 +28,15 @@ Automation is a power tool in manufacturing and cheaper and safer robots are now
 * https://www.youtube.com/watch?v=C9Zf-JKBrDM
 
 
+## Tools
+* Single light dot
+* round array of LEDs (controllable via Arduino)
+* line-like array of LEDs (controllable via Arduino)
+
+## Outcome
+* 360 Video to view on Phone or goggles
+* One image for exhibition
+* Video of creation
 
 ## Schedule
 
