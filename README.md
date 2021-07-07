@@ -26,6 +26,7 @@ Automation is a power tool in manufacturing and cheaper and safer robots are now
 * https://www.idz.ro/rlp/
 * https://fstoppers.com/bts/introducing-3d-light-painting-called-holopainting-133534
 * https://www.youtube.com/watch?v=C9Zf-JKBrDM
+* https://www.facebook.com/629838447196347/photos/a.757921707721353/764319487081575/?type=3
 
 
 ## Tools
