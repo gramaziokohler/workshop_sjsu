@@ -18,12 +18,26 @@ Using a combination of Rhino, Grasshopper, you will learn how to develop a param
 
 Automation is a power tool in manufacturing and cheaper and safer robots are now available for artists and designer to explore. ....
 
+
 ## Examples
 * http://eduardochamorro.github.io/beansreels/portfolio/lightpainting.html
 * http://lightpaintingblog.com/using-virtual-reality-to-augment-light-drawing/
 * http://mkmra2.blogspot.com/2017/01/robotic-painting-with-line-of-lights.html
 * https://www.idz.ro/rlp/
-* 
+* https://fstoppers.com/bts/introducing-3d-light-painting-called-holopainting-133534
+* https://www.youtube.com/watch?v=C9Zf-JKBrDM
+* https://www.facebook.com/629838447196347/photos/a.757921707721353/764319487081575/?type=3
+
+
+## Tools
+* Single light dot
+* round array of LEDs (controllable via Arduino)
+* line-like array of LEDs (controllable via Arduino)
+
+## Outcome
+* 360 Video to view on Phone or goggles
+* One image for exhibition
+* Video of creation
 
 ## Schedule
 
