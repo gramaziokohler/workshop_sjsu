@@ -1,10 +1,16 @@
-# Augmented Light Painting Workshop
+# Robotic Light Painting Workshop
+
 ## Department of Design, SJSU, CA
 
 ![image](https://user-images.githubusercontent.com/13201783/122343449-ff6da180-cf45-11eb-8baf-2d452b6c068e.png)
 
 ## Workshop Team
-Prof. Fabio Gramazio, Prof. Matthias Kohler, Dr. Romana Rust, Gonzalo Casas, Beverly Lytle, Michael Lyrenmann
+
+* Prof. Matthias Kohler
+* Romana Rust
+* Gonzalo Casas
+* Beverly Lytle
+* Michael Lyrenmann
 
 ## Workshop Description
 
