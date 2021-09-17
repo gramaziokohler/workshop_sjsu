@@ -8,7 +8,7 @@ from compas.files import GLTFExporter
 from compas.files.gltf.data_classes import MaterialData, PBRMetallicRoughnessData
 
 
-name = "test03"
+name = "test02"
 
 # 1. Load meshes
 filepath = os.path.join(DATA, "mesh_data.json")
