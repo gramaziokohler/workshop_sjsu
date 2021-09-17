@@ -27,24 +27,23 @@ This workshop will introduce parametric tools and produce 360° light drawings u
 
 ## Light Tools
 
-We will bring different light tools with different autfsätze that allow you to control your light stroke. this can reach from a single dot, to a line , a diffuse light and the change of colors.
-We will provide tools to easily adjust light intensity and color. (on the fly)
+We will bring different light tools with different attachments that allow you to control your light *stroke*. This can range from a single point to a line to diffused light. We will provide tools that allow you to easily adjust the light intensity and colour.
 
 ## Outcome
-* 360 Video to view on in a browser
+* 360° image to view in a browser
 * picture for exhibition
 * video of creation
 
 ## Schedule
 
-### Part I: Introduction to Rhino / Grasshopper (Parametric Platform)
+### Part I: Introduction to Rhino / Grasshopper (Parametric Platform) on Zoom
 
-Date Friday, Sept 24th 2021, 17:00 - 19:00 CEST, on Zoom 
-pacific time? 8am - 10:30am Pacific Time
+Friday, Sept 24th 2021
+09:00 - 11:00 AM GMT-7
+06:00 - 08:00 PM CET
 
 In this introduction we will introduce you to Rhino/Grasshopper as a platform and demonstrate the full process from creating of curves to robot movement in simulation.
 We will record this lecture so you can watch it later on.
-
 
 ### Part 2: Offline Practice and Project Development
 
@@ -64,6 +63,11 @@ If you want a more in-depth grasshopper handbook, Modelab has created an excelle
 
 
 ### Part 3: Session before workshop
+
+Friday, Oct 22th 2021
+09:00 - 11:00 AM GMT-7
+06:00 - 08:00 PM CET
+
 Last questions, talk about each designs, last changes ...
 
 ### Part 4: Workshop Week
