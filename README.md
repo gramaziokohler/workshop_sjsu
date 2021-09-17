@@ -14,7 +14,7 @@ at Department of Design, San Jose State University (SJSU), CA
 
 ## Workshop Description
 
-This workshop will introduce parametric tools and produce 360° light drawings using SJSU's UR5 robot and an [Insta360](https://www.insta360.com/) camera. The workshop will focus on two areas:
+This workshop will introduce parametric tools and produce 360° light drawings using SJSU's [UR5 robot](https://www.universal-robots.com/e-series/) and an [Insta360](https://www.insta360.com/) camera. The workshop will focus on two areas:
 
 * Generative Design
 
