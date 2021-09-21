@@ -14,7 +14,6 @@ S = Scale.from_factors([10.] * 3)
 T = S * T
 
 
-
 def create_glb_viewer(name, meshes, color):
     # 2. Create GLTF content
     content = GLTFContent()
