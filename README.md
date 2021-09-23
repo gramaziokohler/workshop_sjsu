@@ -51,27 +51,22 @@ Between the Part 1 and Part 3, you will all work on your specific project ideas.
 
 * https://gramaziokohler.github.io/teaching_materials/rhino/
 * https://gramaziokohler.github.io/teaching_materials/grasshopper/
-
-Here are a few videos by the creator of Grasshopper, David Rutten:
-
-[Grasshopper Getting Started by David Rutten - 01 - Interface Basics](https://vimeopro.com/rhino/grasshopper-getting-started-by-david-rutten)
-
-If you want a more in-depth grasshopper handbook, Modelab has created an excellent book with example files:
-
-[The Grasshopper Primer Third Edition](https://modelab.gitbooks.io/grasshopper-primer/content/index.html)
-
+* https://vimeopro.com/rhino/grasshopper-getting-started-by-david-rutten
+* https://modelab.gitbooks.io/grasshopper-primer/content/index.html
 
 
 ### Part 3: Session before workshop
+
+This session is to talk about your designs, possibility for last questions and changes.
 
 Friday, Oct 22th 2021
 09:00 - 11:00 AM GMT-7
 06:00 - 08:00 PM CET
 
-Last questions, talk about each designs, last changes ...
 
 ### Part 4: Workshop Week
 
+Mo, Oct 25th - 29th 2021
 
 
 # Files
@@ -98,9 +93,9 @@ We will be using Rhino as the primary platform.
 
 If you don't have it already, you can download a 90-day free evaluation version of Rhino 7 here:
 
-[Windows 90-day Evaluation](https://www.rhino3d.com/download/rhino-for-windows/evaluation)
+* [Windows 90-day Evaluation](https://www.rhino3d.com/download/rhino-for-windows/evaluation)
 
-[MacOS 90-day Evaluation](https://www.rhino3d.com/download/rhino-for-mac/evaluation)
+* [MacOS 90-day Evaluation](https://www.rhino3d.com/download/rhino-for-mac/evaluation)
 
 ### Grasshopper
 
@@ -108,13 +103,29 @@ If you don't have it already, you can download a 90-day free evaluation version 
 
 ### Grasshopper Plugins
 
-One of the best things about Grasshopper is the massive ecosystem of third-party plugins. However, Grasshopper plugins can sometimes be difficult to install. However, things are getting better with Rhino 7. You should be able to use the Rhino Command "PackageManager" to open up the new Rhino package manager and install the plugins from the web.
-....
+One of the best things about Grasshopper is the massive ecosystem of third-party plugins. You should be able to use the Rhino Command "PackageManager" to open up the new Rhino package manager and install the plugins from the web. 
 
 **List of Grasshopper Plugins you should try to install:**
 
-....
+* [Anemone](https://www.food4rhino.com/en/app/anemone)
+	On Mac, you need to copy the anemone.gha file into your Grasshopper Components folder. You can find this hidden folder by going to Grasshopper > File > Special Folders > Components Folder.
 
-### Illustrator
 
-You can import or export vector art between Rhino and Illustrator. You can also copy/paste between Rhino and Illustrator, although I don't recommend it for larger files.
+
+### Anaconda 3
+
+We use Anaconda to make sure Python and all required libraries are installed correctly on all platforms. Please use the following download to install it:
+* [Anaconda Individual Edition](https://www.anaconda.com/products/individual)
+
+### Visual Studio Code
+
+Most of the examples will be used from Rhino/Grasshopper, but the option to use them as stand alone scripts might create more opportunities. For that reason, we recommend installing the free code editor Visual Studio Code along with its Python extension:
+
+* [VS Code](https://www.anaconda.com/products/individual)
+* [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
+
+### Slack
+
+We created a slack channel for this workshop. Please don’t hesitate to contact us if you have any questions. 
+
+
