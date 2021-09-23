@@ -82,15 +82,13 @@ Our presentaton and useful links can also be found on the [MIRO board](https://m
 
 # Communication
 
-Via slack channel or email.
-    
+We created a slack channel for this workshop:
+
+* [workshop-sjsu-2021](https://gramaziokohler.slack.com/messages/workshop-sjsu-2021/)
 
 # Platforms
 
 ## Software
-
-### Git
-
 
 ### Rhino
 
@@ -109,12 +107,45 @@ If you don't have it already, you can download a 90-day free evaluation version 
 ### Grasshopper Plugins
 
 One of the best things about Grasshopper is the massive ecosystem of third-party plugins. However, Grasshopper plugins can sometimes be difficult to install. However, things are getting better with Rhino 7. You should be able to use the Rhino Command "PackageManager" to open up the new Rhino package manager and install the plugins from the web.
-....
 
-**List of Grasshopper Plugins you should try to install:**
+* [Anemone](https://www.food4rhino.com/en/app/anemone)
 
-....
+On Mac, you need to copy the `anemone.gha` file into your Grasshopper Components folder. You can find this hidden folder by going to `Grasshopper > File > Special Folders > Components Folder`.
+
+### Anaconda 3
+
+We use Anaconda to make sure Python and all required libraries are installed correctly on all platforms. Please use the following download to install it:
+
+* [Anaconda Individual Edition](https://www.anaconda.com/products/individual)
+
+### Visual Studio Code
+
+Most of the examples will be used from Rhino/Grasshopper, but the option to use them as stand alone scripts might create more opportunities. For that reason, we recommend installing the free code editor Visual Studio Code along with its Python extension:
+
+* [VS Code](https://code.visualstudio.com/)
+* [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
 
 ### Illustrator
 
 You can import or export vector art between Rhino and Illustrator. You can also copy/paste between Rhino and Illustrator, although I don't recommend it for larger files.
+
+## Installation
+
+We use `conda` to make sure we have clean, isolated environment for dependencies.
+
+First time using `conda`? Make sure you run this at least once:
+
+    (base) conda config --add channels conda-forge
+
+Now create a new conda environment:
+
+    (base) conda env create -f https://dfab.link/sjsu-2021.yml
+
+### Get the workshop files
+
+    (base) conda activate sjsu
+    (sjsu) git clone https://github.com/gramaziokohler/workshop_sjsu
+
+### Add COMPAS to Rhino
+
+    (sjsu) python -m compas_rhino.install -v 7.0
