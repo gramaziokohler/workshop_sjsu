@@ -1,27 +1,26 @@
 import os
-import json
-from workshop_sjsu import DATA
 from workshop_sjsu import WEB
-from compas.datastructures import Mesh
 from compas.files import GLTFContent
 from compas.files import GLTFExporter
 from compas.files.gltf.data_classes import MaterialData, PBRMetallicRoughnessData
 from compas.geometry import Transformation, Frame, Scale
 
 
-T = Transformation.from_frame_to_frame(Frame.worldXY(), Frame.worldZX())
-S = Scale.from_factors([10.] * 3)
-T = S * T
-
+def transform_and_process_meshes_for_glb(M):
+    from compas_rhino.geometry import RhinoMesh
+    meshes = [RhinoMesh.from_geometry(m).to_compas() for m in M]
+    T = Transformation.from_frame_to_frame(Frame.worldXY(), Frame.worldZX())
+    S = Scale.from_factors([15.] * 3) # for sphere radius of 1.5
+    T = S * T
+    for m in meshes:
+        m.transform(T)
+        m.quads_to_triangles()
+    return meshes
 
 def create_glb_viewer(name, meshes, color):
     # 2. Create GLTF content
     content = GLTFContent()
     scene = content.add_scene("half-sphere")
-
-    for m in meshes:
-        m.transform(T)
-        m.quads_to_triangles()
 
     # 2.a create material
     material = MaterialData()
