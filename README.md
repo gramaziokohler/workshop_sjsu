@@ -149,3 +149,13 @@ Now create a new conda environment:
 ### Add COMPAS to Rhino
 
     (sjsu) python -m compas_rhino.install -v 7.0
+
+### Verify installation
+
+    (sjsu) python -m compas
+
+    Yay! COMPAS is installed correctly!
+
+    COMPAS: 1.8.1
+    Python: 3.8.12 | packaged by conda-forge | (default, Sep 16 2021, 01:40:49) [MSC v.1916 64 bit (AMD64)]
+    Extensions: ['compas-fab']
