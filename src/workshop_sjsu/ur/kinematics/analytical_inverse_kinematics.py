@@ -41,8 +41,8 @@ class AnalyticalInverseKinematics(InverseKinematics):
                 except BackendError:
                     configurations[i] = None
 
-        # fit configurations within joint bounds (sets those to `None` that are not working)
-        configurations = self.try_to_fit_configurations_between_bounds(robot, configurations)
+        # fit configurations within joint bounds
+        #configurations = self.try_to_fit_configurations_between_bounds(robot, configurations)
 
         # removes the `None` ones
         if options and "cull" in options and options["cull"] is True:
