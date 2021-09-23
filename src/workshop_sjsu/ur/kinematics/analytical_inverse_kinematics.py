@@ -82,4 +82,3 @@ class UR5AnalyticalIK(AnalyticalInverseKinematics):
 
     def _inverse_kinematics(self, frame):
         return UR5().inverse(frame)
-
