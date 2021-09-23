@@ -1,7 +1,8 @@
 import math
 import Rhino.Geometry as rg
 from compas_fab.utilities import map_range
-
+from ghpythonlib.treehelpers import tree_to_list
+from compas.utilities import color_to_rgb
 
 def cartesian_to_polar(x, y):
     rho = math.sqrt(x**2 + y**2)
@@ -17,3 +18,36 @@ def map2sphere(sphere, circle, points2d, scale):
         pt3d = crv.PointAt(rho_mapped)
         points3d.append(pt3d)
     return points3d
+
+
+def format_data_for_export(points3d, gradients, colors):
+    
+    gradients = tree_to_list(gradients)[0]
+    gradients_list = []
+
+    for g in gradients:
+        for x in g:
+            gradients_list.append(list(x))
+
+    colors_list = []
+    for i in range(colors.BranchCount):
+        path = colors.Path(i)
+        alist = list(colors.Branch(path))
+        colors_list.append([color_to_rgb([c.R, c.G, c.B], normalize=True) for c in alist])
+
+    points3d_list = []
+    for i in range(points3d.BranchCount):
+        path = points3d.Path(i)
+        alist = list(points3d.Branch(path))
+        points3d_list.append([[p.X, p.Y, p.Z] for p in alist])
+
+    for g, p, c in zip(gradients_list, points3d_list, colors_list):
+        assert(len(g) == len(p))
+        assert(len(g) == len(c))
+
+    data = {}
+    data['points3d'] = points3d_list
+    data['gradients'] = gradients_list
+    data['colors'] = colors_list
+
+    return data
