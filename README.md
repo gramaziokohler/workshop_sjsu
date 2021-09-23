@@ -123,7 +123,6 @@ Most of the examples will be used from Rhino/Grasshopper, but the option to use 
 * [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
 
 
-You can import or export vector art between Rhino and Illustrator. You can also copy/paste between Rhino and Illustrator, although I don't recommend it for larger files.
 
 ## Installation
 
