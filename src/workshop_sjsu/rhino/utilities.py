@@ -22,12 +22,11 @@ def map2sphere(sphere, circle, points2d, scale):
 
 def format_data_for_export(points3d, gradients, colors):
     
-    gradients = tree_to_list(gradients)[0]
     gradients_list = []
-
-    for g in gradients:
-        for x in g:
-            gradients_list.append(list(x))
+    for i in range(gradients.BranchCount):
+        path = gradients.Path(i)
+        alist = list(gradients.Branch(path))
+        gradients_list.append(list(alist))
 
     colors_list = []
     for i in range(colors.BranchCount):
