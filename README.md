@@ -123,17 +123,10 @@ Most of the examples will be used from Rhino/Grasshopper, but the option to use 
 * [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
 
 
-You can import or export vector art between Rhino and Illustrator. You can also copy/paste between Rhino and Illustrator, although I don't recommend it for larger files.
 
 ## Installation
 
-We use `conda` to make sure we have clean, isolated environment for dependencies.
-
-First time using `conda`? Make sure you run this at least once:
-
-    (base) conda config --add channels conda-forge
-
-Now create a new conda environment:
+We use `conda` to make sure we create a clean, isolated coding environment:
 
     (base) conda env create -f https://dfab.link/sjsu-2021.yml
 
