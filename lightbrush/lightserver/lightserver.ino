@@ -21,8 +21,8 @@
  * Configure web server
  **************************/
 
-const char* ssid = "NoNetworkAvailable";
-const char* password = "iwillnottellyou";
+const char* ssid = "lightpainting";
+const char* password = "robolux21";
 AsyncWebServer server(80);
 
 /**************************
