@@ -41,7 +41,7 @@ def is_port_open(ip_address, port=80):
 
 def is_lightbrush(ip_address, session=None):
     session = session or requests.Session()
-    response = session.get('http://{}/hi'.format(ip_address))
+    response = session.get('http://{}/hi'.format(ip_address), verify=False)
     return response.text == 'Hello SJSU'
 
 
@@ -153,12 +153,13 @@ if __name__ == '__main__':
     print(' [✓] Lightbrush server found: {}'.format(esp32_ip_address))
 
     session = requests.Session()
-    session.get(f'http://{esp32_ip_address}/brightness?value={args.brightness}')
+    session.get(f'http://{esp32_ip_address}/brightness?value={args.brightness}', verify=False)
     print(f' [✓] Set brightness to {args.brightness}')
 
     def robot_callback(value):
         r, g, b = [int(c * 255) for c in flat_data['colors'][value]]
-        print(f', RGB: {r}, {g}, {b}\r', end='', flush=True)
-        session.get(f'http://{esp32_ip_address}/leds?rgb=[{r},{g},{b}]')
+        brightness = int(flat_data['gradients'][value] * 255)
+        print(f', RGB: {r}, {g}, {b}, Brightness: {brightness}\r', end='', flush=True)
+        session.get(f'http://{esp32_ip_address}/leds?rgb=[{r},{g},{b}]&brightness={brightness}', verify=False)
 
     asyncio.run(start_server(robot_callback))

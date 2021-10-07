@@ -156,6 +156,9 @@ void setupServer() {
         i++;
       }
     }
+    if (request->hasParam("brightness")) {
+      strip.setBrightness(request->getParam("brightness")->value().toInt());
+    }
     updateStrip();
     request->send(200, "text/plain", "OK");
   });
