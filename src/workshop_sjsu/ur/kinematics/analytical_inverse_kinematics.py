@@ -55,7 +55,7 @@ class AnalyticalInverseKinematics(InverseKinematics):
 
     def joint_angles_to_configurations(self, robot, solutions):
         joint_names = robot.get_configurable_joint_names()
-        return [Configuration.from_revolute_values(q, joint_names=joint_names) for q in solutions]
+        return [Configuration.from_revolute_values(q, joint_names=joint_names) if q else None for q in solutions]
 
     def try_to_fit_configurations_between_bounds(self, robot, configurations):
         """
