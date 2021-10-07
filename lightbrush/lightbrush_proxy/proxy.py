@@ -11,8 +11,8 @@ import sys
 
 import requests
 
-BYTE_ORDER = '<'
-PAYLOAD_FORMAT = 'Ic'
+BYTE_ORDER = '!'
+PAYLOAD_FORMAT = 'I'
 
 
 def get_current_ip_address():
@@ -59,13 +59,14 @@ def detect_esp32_webserver(ip_range):
 
 async def handle_tcp_request(callback, reader, writer):
     try:
-        data = await reader.readline()
-        value, _delim = struct.unpack(BYTE_ORDER + PAYLOAD_FORMAT, data)
-        addr, port = writer.get_extra_info('peername')
+        while True:
+            data = await reader.read(4)
+            value = struct.unpack(BYTE_ORDER + PAYLOAD_FORMAT, data)[0]
+            addr, port = writer.get_extra_info('peername')
 
-        print(f' [ ] Received "{value}" from {addr}:{port}', end='', flush=True)
-        callback(value)
-        print(f' [✓]')
+            print(f' [ ] Received "{value}" from {addr}:{port}', end='', flush=True)
+            callback(value)
+            print(f' [✓]')
 
     finally:
         if writer:
