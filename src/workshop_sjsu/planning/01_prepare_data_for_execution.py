@@ -46,8 +46,7 @@ def reduce_to_reachable(frames, connection_type='gui'):
 
             configurations_per_path = []
             for frame_tcf in frames_per_path:
-                frame0_t0cf = robot.attached_tool.from_tcf_to_t0cf([frame_tcf])[
-                    0]
+                frame0_t0cf = robot.attached_tool.from_tcf_to_t0cf([frame_tcf])[0]
                 try:
                     configs = client.inverse_kinematics(robot, frame0_t0cf, options={
                                                         "check_collision": True, "cull": False})
