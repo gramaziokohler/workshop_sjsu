@@ -11,8 +11,10 @@ def generate_script(server_ip, server_port, configurations, velocity, radius, tc
     script += "\tsocket_open(SERVER_ADDRESS, PORT)\n"
 
     for i, config in enumerate(configurations):
-        script += "\tmovel([%.6f, %.6f, %.6f, %.6f, %.6f, %.6f], v=%.4f, r=%.4f)\n" % tuple(
-            config.joint_values + [velocity, radius])
+        if i == 0:
+            script += "\tmovej([%.6f, %.6f, %.6f, %.6f, %.6f, %.6f], v=%.4f, r=%.4f)\n" % tuple(config.joint_values + [velocity, radius])
+        else:
+            script += "\tmovel([%.6f, %.6f, %.6f, %.6f, %.6f, %.6f], v=%.4f, r=%.4f)\n" % tuple(config.joint_values + [velocity, radius])
         script += "\tsocket_send_int(%i)\n" % i
         script += "\ttextmsg(\"%i\")\n" % i
 
