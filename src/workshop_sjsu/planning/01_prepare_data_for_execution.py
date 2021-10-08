@@ -1,12 +1,14 @@
 import os
 import logging
 import compas
+import math
 
 from compas.geometry import Point
 from compas.geometry import Plane
 from compas.geometry import Frame
 from compas.geometry import Vector
 from compas.geometry import closest_point_on_plane
+from compas.robots import Configuration
 from compas_fab.backends.pybullet import LOG
 
 from workshop_sjsu.planning.setup import Client
@@ -17,6 +19,7 @@ from workshop_sjsu.planning import IK_IDX
 from workshop_sjsu import DATA
 
 LOG.setLevel(logging.ERROR)
+
 
 def translate_and_create_frames(points3d):
     frames = []
@@ -115,15 +118,57 @@ def add_transition_between_paths_and_flatten(frames, gradients, colors, configur
             gradients_flattened += gradients[i + 1]
             colors_flattened += colors[i + 1]
             configurations_flattened += configurations[i + 1]
-    
+
     print("Now %d frames with transitions" % len(frames_flattened))
 
     return frames_flattened, gradients_flattened, colors_flattened, configurations_flattened
 
 
+def make_configurations_smooth(configurations):
+
+    new_joint_values = []
+
+    for i in range(len(configurations)):
+        if i == 0:
+            prev = configurations[i].joint_values
+        else:
+            curr = configurations[i].joint_values
+            new = []
+            for p, c1 in zip(prev, curr):
+                c2 = c1 - 2 * math.pi
+                c3 = c1 + 2 * math.pi
+                values = [c1, c2, c3]
+                diffs = [math.fabs(p - c) for c in values]
+                idx = diffs.index(min(diffs))
+                new.append(values[idx])
+            configurations[i].joint_values = new
+            prev = configurations[i].joint_values
+        configurations[i].joint_values[-1] = 0
+        new_joint_values.append(configurations[i].joint_values)
+
+    # now try if we can bring all of them down
+    for i, j in enumerate(zip(*new_joint_values)):
+        v1 = min(j) + max(j)
+        v2 = v1 - 2 * math.pi
+        v3 = v1 + 2 * math.pi
+        values = [math.fabs(v) for v in [v1, v2, v3]]
+        idx = values.index(min(values))
+        if idx == 1:
+            for k in range(len(new_joint_values)):
+                new_joint_values[k][i] -= 2 * math.pi
+        elif idx == 2:
+            for k in range(len(new_joint_values)):
+                new_joint_values[k][i] -= 2 * math.pi
+
+    new_configurations = [Configuration.from_revolute_values(j) for j in new_joint_values]
+
+    return new_configurations
+
+
 if __name__ == "__main__":
 
     NAME = "example03"
+
     filepath = os.path.join(DATA, "%s.json" % NAME)
 
     data = compas.json_load(filepath)
@@ -136,7 +181,7 @@ if __name__ == "__main__":
     frames = translate_and_create_frames(points3d)
 
     # 2. Reduce to only use buildable paths
-    #ct = 'gui'
+    # ct = 'gui'
     ct = 'direct'
     configurations, indices2keep = reduce_to_reachable(frames, connection_type=ct)
 
@@ -147,6 +192,8 @@ if __name__ == "__main__":
 
     F, G, C, J = add_transition_between_paths_and_flatten(
         frames, gradients, colors, configurations, connection_type=ct)
+
+    J = make_configurations_smooth(J)
 
     data = {}
     data['frames'] = F
