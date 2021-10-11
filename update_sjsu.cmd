@@ -18,5 +18,5 @@ EXIT /B %errorlevel%
 
 :update_sjsu
 ECHO Updating compas_fab...
-python -m pip install --no-deps --force-reinstall git+https://github.com/compas-dev/compas.git@gltf_update
+python -m pip install --no-deps --force-reinstall git+https://github.com/compas-dev/compas.git@gltf_update#egg=compas
 PAUSE
