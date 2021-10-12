@@ -18,5 +18,5 @@ EXIT /B %errorlevel%
 
 :update_sjsu
 ECHO Updating COMPAS framework...
-python -m pip install --no-deps --force-reinstall https://github.com/compas-dev/compas/archive/gltf_update.zip#egg=compas
+python -m pip install --no-deps --force-reinstall update/COMPAS-1.8.1.tar.gz
 PAUSE
