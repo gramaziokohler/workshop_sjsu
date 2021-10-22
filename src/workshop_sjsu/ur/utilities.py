@@ -1,3 +1,4 @@
+import math
 import os
 import socket
 
@@ -23,8 +24,7 @@ def program():
   socket_open(PROXY_ADDRESS, PROXY_PORT)
 """
 
-URSCRIPT_TEMPLATE_POST = """
-  socket_close()
+URSCRIPT_TEMPLATE_POST = """  socket_close()
   textmsg("<< Exiting program.)
 end
 program()
@@ -53,12 +53,15 @@ class URScriptHelper(object):
 
         return self.wrap_script(script)
 
-    def execute(self, ur_ip, script):
+    def execute(self, ur_ip, script, sock=None):
         try:
-            s = socket.create_connection((ur_ip, UR_SERVER_PORT), timeout=2)
-            s.send(script.encode('ascii'))
+            if not sock:
+                sock = socket.create_connection((ur_ip, UR_SERVER_PORT), timeout=2)
+
+            sock.send(script.encode('ascii'))
             print("Script sent to {} on port {}".format(ur_ip, UR_SERVER_PORT))
-            s.close()
+
+            return sock
         except socket.timeout:
             print("UR with ip {} not available on port {}".format(ur_ip, UR_SERVER_PORT))
             raise

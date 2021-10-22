@@ -2,6 +2,7 @@ import argparse
 import io
 import os
 import sys
+import struct
 
 import compas
 
@@ -11,6 +12,9 @@ except:
     from .utilities import is_available, URScriptHelper
 
 
+BYTE_ORDER = '!'
+PAYLOAD_FORMAT = 'I'
+
 def execute(proxy_ip, proxy_port, ur_ip, configurations, tool_angle_axis):
     ur = URScriptHelper(proxy_ip, proxy_port, tool_angle_axis)
     script = ur.send_configurations(configurations, velocity=0.01, radius=0.01)
@@ -19,7 +23,21 @@ def execute(proxy_ip, proxy_port, ur_ip, configurations, tool_angle_axis):
 
     if ur_available:
         print('UR connected, sending script...')
-        ur.execute(ur_ip, script)
+        try:
+            sock = ur.execute(ur_ip, script)
+
+            while True:
+                data = sock.recv(4)
+                if not data:
+                    break
+
+                value = struct.unpack(BYTE_ORDER + PAYLOAD_FORMAT, data)[0]
+                if (value + 1) == len(configurations):
+                    print('Done!')
+                    return
+        finally:
+            if sock:
+                sock.close()
     else:
         print('UR not connected!')
 
