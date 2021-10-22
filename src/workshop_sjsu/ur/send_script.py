@@ -1,8 +1,8 @@
+from utilities import send_script, is_available
+from socketserver import TCPServer, BaseRequestHandler
 import sys
 sys.path.append(r"C:\Users\rustr\workspace\ur_online_control\ur_direct")
 
-from socketserver import TCPServer, BaseRequestHandler
-from utilities import send_script, is_available
 
 script = ""
 script += "def program():\n"
@@ -27,9 +27,11 @@ script += "\ttextmsg(\"<< Exiting program.\")\n"
 script += "end\n"
 script += "program()\n\n\n"
 
+
 def list_str_to_list(str):
     str = str[(str.find("[")+1):str.find("]")]
     return [float(x) for x in str.split(",")]
+
 
 class MyTCPHandler(BaseRequestHandler):
 
@@ -40,7 +42,7 @@ class MyTCPHandler(BaseRequestHandler):
             while pose.find("]") == -1:
                 pose += self.request.recv(1024).decode()
             print(pose)
-        #self.server.server_close() # this throws an exception
+        # self.server.server_close() # this throws an exception
         print("2===")
 
 
@@ -49,7 +51,8 @@ def get_current_pose_cartesian(server_ip, server_port, ur_ip, tool_angle_axis):
     global script
     script = script.replace("{SERVER_ADDRESS}", server_ip)
     script = script.replace("{PORT}", str(server_port))
-    script = script.replace("{TCP}", str([tool_angle_axis[i] if i >= 3 else tool_angle_axis[i]/1000. for i in range(len(tool_angle_axis))]))
+    script = script.replace("{TCP}", str(
+        [tool_angle_axis[i] if i >= 3 else tool_angle_axis[i]/1000. for i in range(len(tool_angle_axis))]))
 
     print(script)
 
@@ -61,20 +64,19 @@ def get_current_pose_cartesian(server_ip, server_port, ur_ip, tool_angle_axis):
 
         send_script(ur_ip, script)
         # send file
-        #try:
-        #server.serve_forever()
-        #except:
+        # try:
+        # server.serve_forever()
+        # except:
         #    return list_str_to_list(server.rcv_msg)
+
 
 if __name__ == "__main__":
     server_port = 9111
     server_ip = "192.168.10.11"
     ur_ip = "192.168.10.10"
-    tool_angle_axis = [0,0,0,0,0,0]
+    tool_angle_axis = [0, 0, 0, 0, 0, 0]
 
-    pose = get_current_pose_cartesian(server_ip, server_port, ur_ip, tool_angle_axis)
+    pose = get_current_pose_cartesian(
+        server_ip, server_port, ur_ip, tool_angle_axis)
 
     print("pose", pose)
-
-
-
