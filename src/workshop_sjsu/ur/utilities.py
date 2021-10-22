@@ -44,6 +44,10 @@ class URScriptHelper(object):
     def send_configurations(self, configurations, velocity, radius):
         script = ""
         for i, config in enumerate(configurations):
+            config = config.copy()
+            config.joint_values[0] += math.radians(180)
+            config.joint_values[2] += math.radians(360)
+        
             if i == 0:
                 script += 'movej([%.6f, %.6f, %.6f, %.6f, %.6f, %.6f], v=%.4f, r=%.4f)\n' % tuple(config.joint_values + [velocity, radius])
             else:
