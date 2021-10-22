@@ -92,20 +92,27 @@ def load_command_file(file):
     with io.open(file, 'r') as fp:
         commands = json.load(fp)
 
-        colors = list(itertools.chain(*(commands['colors'])))
-        gradients = list(itertools.chain(*(commands['gradients'])))
-        points3d = list(itertools.chain(*(commands['points3d'])))
+        flattened = 'points3d' not in commands
 
-    if len(colors) != len(gradients) or len(gradients) != len(points3d):
-        print(' [!] Length of colors/gradients/points do not match between each other!')
-        print('     Colors: {}, Gradients: {}, Points 3D: {}'.format(
-            len(colors), len(gradients), len(points3d)))
+        if flattened:
+            colors = commands['colors']
+            gradients = commands['gradients']
+            frames = commands['frames']
+        else:
+            colors = list(itertools.chain(*(commands['colors'])))
+            gradients = list(itertools.chain(*(commands['gradients'])))
+            frames = list(itertools.chain(*(commands['points3d'])))     # TODO: Ask Romana if this should change to `frames` also
+
+    if len(colors) != len(gradients) or len(gradients) != len(frames):
+        print(' [!] Length of colors/gradients/frames do not match between each other!')
+        print('     Colors: {}, Gradients: {}, Frames: {}'.format(
+            len(colors), len(gradients), len(frames)))
         sys.exit(1)
 
     return dict(
         colors=colors,
         gradients=gradients,
-        points3d=points3d,
+        frames=frames,
     )
 
 
@@ -126,7 +133,7 @@ if __name__ == '__main__':
 
     print(' [ ] Loading commands file...\r', end='', flush=True)
     flat_data = load_command_file(args.file)
-    print(' [✓] Loaded {} points/commands'.format(len(flat_data['points3d'])))
+    print(' [✓] Loaded {} frames/commands'.format(len(flat_data['frames'])))
 
     ip_address = get_current_ip_address()
     print(' [✓] Local IP address: {}'.format(ip_address))
