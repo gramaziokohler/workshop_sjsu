@@ -10,6 +10,7 @@ import struct
 import sys
 
 import requests
+from compas.geometry import Bezier
 
 BYTE_ORDER = '!'
 PAYLOAD_FORMAT = 'I'
@@ -61,6 +62,8 @@ async def handle_tcp_request(callback, reader, writer):
     try:
         while True:
             data = await reader.read(4)
+            if data is None:
+                return
             value = struct.unpack(BYTE_ORDER + PAYLOAD_FORMAT, data)[0]
             addr, port = writer.get_extra_info('peername')
 
@@ -164,10 +167,22 @@ if __name__ == '__main__':
     session.get(f'http://{esp32_ip_address}/brightness?value={args.brightness}', verify=False)
     print(f' [✓] Set brightness to {args.brightness}')
 
+
+    def map_gradient_value(value):
+        x = 1.0
+        y = 1.0
+        curve = Bezier([[0.0, 0.0, 0.0], [x, 0.0, 0.0], [y, 1.0, 0.0], [1., 1., 0]])
+        MULT = 0.8
+        vmapped = curve.point(value).y
+        vmapped *= MULT
+        return vmapped
+
     def robot_callback(value):
         r, g, b = [int(c * 255) for c in flat_data['colors'][value]]
-        brightness = int(flat_data['gradients'][value] * 255)
+        vmapped = map_gradient_value(flat_data['gradients'][value])
+        brightness = int(vmapped * 255)
         print(f', RGB: {r}, {g}, {b}, Brightness: {brightness}\r', end='', flush=True)
         session.get(f'http://{esp32_ip_address}/leds?rgb=[{r},{g},{b}]&brightness={brightness}', verify=False)
 
     asyncio.run(start_server(robot_callback))
+    # python lightbrush\lightbrush_proxy\proxy.py --ip 10.0.0.20 C:\Users\rustr\workspace\teaching\workshop_sjsu\src\workshop_sjsu\data\example04_execution.json 
