@@ -31,6 +31,16 @@ class AnalyticalInverseKinematics(InverseKinematics):
 
         solutions = self._inverse_kinematics(frame_RCF)
 
+        # get smallest in numpy
+        # new = []
+        # for c1 in configuration.joint_values:
+        # c2 = c1 - 2 * math.pi
+        # c3 = c1 + 2 * math.pi
+        # values = [c1, c2, c3]
+        # absv = [abs(v) for v in values]
+        # idx = absv.index(min(absv))
+        # new.append(values[idx])
+
         configurations = self.joint_angles_to_configurations(robot, solutions)
 
         # check collisions for all configurations (sets those to `None` that are not working)
