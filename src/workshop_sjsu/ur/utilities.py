@@ -11,6 +11,7 @@ def is_available(ur_ip):
     else:
         return False
 
+INDENT = "\t"
 UR_SERVER_PORT = 30002
 URSCRIPT_TEMPLATE_PRE = "def program():\n"
 
