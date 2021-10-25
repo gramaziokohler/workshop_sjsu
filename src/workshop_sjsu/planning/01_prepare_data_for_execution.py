@@ -3,35 +3,18 @@ import logging
 import compas
 import math
 
-from compas.geometry import Point
-from compas.geometry import Plane
-from compas.geometry import Frame
-from compas.geometry import Vector
-from compas.geometry import closest_point_on_plane
 from compas.robots import Configuration
 from compas_fab.backends.pybullet import LOG
 
 from workshop_sjsu.planning.setup import Client
 from workshop_sjsu.planning.setup import sjsu_setup
-from workshop_sjsu.planning import SPHERE_CENTER
-from workshop_sjsu.planning import UP_PLANE
+from workshop_sjsu.planning.utilities import translate_and_create_frames
+from workshop_sjsu.planning.utilities import create_transition_frames_on_sphere
 from workshop_sjsu.planning import IK_IDX
 from workshop_sjsu import DATA
 
 LOG.setLevel(logging.ERROR)
 
-
-def translate_and_create_frames(points3d):
-    frames = []
-    for points_per_path in points3d:
-        frames.append([])
-        for point in points_per_path:
-            point = Point(*point) + Vector(*SPHERE_CENTER)
-            normal = point - SPHERE_CENTER
-            plane = Plane(point, normal)
-            frame = Frame.from_plane(plane)
-            frames[-1].append(frame)
-    return frames
 
 
 def reduce_to_reachable(frames, connection_type='gui'):
@@ -72,6 +55,9 @@ def reduce_to_reachable(frames, connection_type='gui'):
     return configurations, indices2keep
 
 
+
+
+
 def add_transition_between_paths_and_flatten(frames, gradients, colors, configurations, connection_type='gui'):
 
     frames_flattened = []
@@ -86,13 +72,17 @@ def add_transition_between_paths_and_flatten(frames, gradients, colors, configur
 
         for i, (path1, path2) in enumerate(zip(frames[:-1], frames[1:])):
 
+            start_frame = path1[-1]
+            end_frame = path2[0]
+            transition_frames = create_transition_frames_on_sphere(start_frame, end_frame)
+
             # add another 2
             # TODO: this can be improved by moving along the sphere to the point
-            point_s = closest_point_on_plane(path1[-1].point, UP_PLANE)
-            frame_s = Frame(point_s, path1[-1].xaxis, path1[-1].yaxis)
+            #point_s = closest_point_on_plane(path1[-1].point, UP_PLANE)
+            #frame_s = Frame(point_s, path1[-1].xaxis, path1[-1].yaxis)
 
-            point_e = closest_point_on_plane(path2[0].point, UP_PLANE)
-            frame_e = Frame(point_e, path2[-1].xaxis, path2[-1].yaxis)
+            #point_e = closest_point_on_plane(path2[0].point, UP_PLANE)
+            #frame_e = Frame(point_e, path2[-1].xaxis, path2[-1].yaxis)
 
             if i == 0:
                 frames_flattened += path1
@@ -101,15 +91,18 @@ def add_transition_between_paths_and_flatten(frames, gradients, colors, configur
                 configurations_flattened += configurations[i]
 
             # transition
-            frames_flattened += [frame_s, frame_e]
-            gradients_flattened += [0, 0]
-            colors_flattened += [(0, 0, 0), (0, 0, 0)]
+            frames_flattened += transition_frames #[frame_s, frame_e]
+            gradients_flattened += [0 for _ in range(len(transition_frames))]
+            colors_flattened += [(0, 0, 0) for _ in range(len(transition_frames))]
 
             # configurations_flattened
-            for frame_tcf in [frame_s, frame_e]:
+            for frame_tcf in transition_frames:
                 frame0_t0cf = robot.attached_tool.from_tcf_to_t0cf([frame_tcf])[0]
-                configs = client.inverse_kinematics(robot, frame0_t0cf, options={
-                                                    "check_collision": True, "cull": False})
+                configs = client.inverse_kinematics(robot, frame0_t0cf, 
+                                                    options={
+                                                        "check_collision": True,
+                                                        "cull": False}
+                                                )
                 solution = configs[IK_IDX]
                 configurations_flattened.append(solution)
 
@@ -167,7 +160,9 @@ def make_configurations_smooth(configurations):
 
 if __name__ == "__main__":
 
-    NAME = "example03"
+    #NAME = "example03"
+    NAME = "example04"
+    #NAME = "points_reachable"
 
     filepath = os.path.join(DATA, "%s.json" % NAME)
 
@@ -181,8 +176,8 @@ if __name__ == "__main__":
     frames = translate_and_create_frames(points3d)
 
     # 2. Reduce to only use buildable paths
-    # ct = 'gui'
-    ct = 'direct'
+    ct = 'gui'
+    #ct = 'direct'
     configurations, indices2keep = reduce_to_reachable(frames, connection_type=ct)
 
     # remove also from frames, gradients and colors
