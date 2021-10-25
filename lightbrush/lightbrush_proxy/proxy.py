@@ -122,6 +122,7 @@ def load_command_file(file):
 class ExecutionDataHandler(object):
     def __init__(self):
         self.current_file = None
+        self.flat_data = None
 
     def watch_for_file(self, file, loop=None):
         if not loop:
@@ -132,7 +133,6 @@ class ExecutionDataHandler(object):
         if not self.current_file or self.current_file != json_file: 
             self.current_file = json_file
             self.read_execution_data(json_file)
-            self.flat_data = None
 
     def read_execution_data(self, json_file):
         print(' [ ] Loading commands file...\r', end='', flush=True)
