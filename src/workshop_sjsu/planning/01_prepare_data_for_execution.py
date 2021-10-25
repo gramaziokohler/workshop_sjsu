@@ -114,6 +114,12 @@ def add_transition_between_paths_and_flatten(frames, gradients, colors, configur
 
     print("Now %d frames with transitions" % len(frames_flattened))
 
+    # add offs to start and end
+    frames_flattened = [frames_flattened[0]] + frames_flattened + [frames_flattened[-1]]
+    gradients_flattened = [0] + gradients_flattened + [0]
+    colors_flattened = [(0, 0, 0)] + colors_flattened + [(0, 0, 0)]
+    configurations_flattened = [configurations_flattened[0]] + configurations_flattened + [configurations_flattened[-1]]
+
     return frames_flattened, gradients_flattened, colors_flattened, configurations_flattened
 
 
@@ -162,7 +168,6 @@ if __name__ == "__main__":
 
     #NAME = "example03"
     NAME = "example04"
-    #NAME = "points_reachable"
 
     filepath = os.path.join(DATA, "%s.json" % NAME)
 
