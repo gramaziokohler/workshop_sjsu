@@ -4,7 +4,7 @@ from compas_fab.backends.exceptions import BackendError
 from compas_fab.backends.interfaces import InverseKinematics
 from .utils import fit_within_bounds
 from .offset_wrist_kinematics import UR5
-
+from .offset_wrist_kinematics import UR5e
 
 class AnalyticalInverseKinematics(InverseKinematics):
     """Create a custom InverseKinematicsSolver for a robot.
@@ -82,3 +82,8 @@ class UR5AnalyticalIK(AnalyticalInverseKinematics):
 
     def _inverse_kinematics(self, frame):
         return UR5().inverse(frame)
+
+class UR5eAnalyticalIK(AnalyticalInverseKinematics):
+
+    def _inverse_kinematics(self, frame):
+        return UR5e().inverse(frame)
