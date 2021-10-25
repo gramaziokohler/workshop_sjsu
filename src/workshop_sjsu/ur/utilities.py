@@ -11,42 +11,39 @@ def is_available(ur_ip):
     else:
         return False
 
-
 UR_SERVER_PORT = 30002
-URSCRIPT_TEMPLATE_PRE = """
-def program():
-  textmsg(">> Entering program.")
-  PROXY_ADDRESS = "{proxy_ip}"
-  PROXY_PORT = {proxy_port}
-  textmsg(PROXY_ADDRESS)
-  textmsg(PROXY_PORT)
-  set_tcp(p{tcp})
-  socket_open(PROXY_ADDRESS, PROXY_PORT)
-"""
+URSCRIPT_TEMPLATE_PRE = "def program():\n"
 
-URSCRIPT_TEMPLATE_POST = """  socket_close()
-  textmsg("<< Exiting program.)
-end
-program()
+URSCRIPT_TEMPLATE_PRE += "\ttextmsg(\">> Entering program.\")\n"
+URSCRIPT_TEMPLATE_PRE += "\tPROXY_ADDRESS = \"{proxy_ip}\"\n"
+URSCRIPT_TEMPLATE_PRE += "\tPROXY_PORT = {proxy_port}\n"
+URSCRIPT_TEMPLATE_PRE += "\ttextmsg(PROXY_ADDRESS)\n"
+URSCRIPT_TEMPLATE_PRE += "\ttextmsg(PROXY_PORT)\n"
+URSCRIPT_TEMPLATE_PRE += "\tset_tcp(p{tcp})\n"
+URSCRIPT_TEMPLATE_PRE += "\tsocket_open(PROXY_ADDRESS, PROXY_PORT)\n"
 
-"""
+
+URSCRIPT_TEMPLATE_POST = "socket_close()\n"
+URSCRIPT_TEMPLATE_POST += "\ttextmsg(\"<< Exiting program.\")\n"
+URSCRIPT_TEMPLATE_POST += "end\n"
+URSCRIPT_TEMPLATE_POST += "program()\n\n\n"
 
 
 class URScriptHelper(object):
     def __init__(self, proxy_ip, proxy_port, tcp=[0, 0, 0, 0, 0, 0]):
-        self.template_pre = URSCRIPT_TEMPLATE_PRE.format(proxy_ip=proxy_ip, proxy_port=proxy_port, tcp=tcp)
+        self.template_pre = URSCRIPT_TEMPLATE_PRE.format(proxy_ip=proxy_ip, proxy_port=proxy_port, tcp=tcp, indent=INDENT)
 
     def wrap_script(self, script):
-        indented_script = '\n'.join(['  ' + line for line in script.split('\n')])
-        script = self.template_pre + indented_script + URSCRIPT_TEMPLATE_POST
+        indented_script = '\n'.join([INDENT + line for line in script.split('\n')])
+        script = self.template_pre + indented_script + URSCRIPT_TEMPLATE_POST.format(indent=INDENT)
         return script
 
     def send_configurations(self, configurations, velocity, radius):
         script = ""
         for i, config in enumerate(configurations):
             config = config.copy()
-            config.joint_values[0] += math.radians(180)
-            config.joint_values[2] += math.radians(360)
+            #config.joint_values[0] += math.radians(180)
+            #config.joint_values[2] += math.radians(360)
         
             if i == 0:
                 script += 'movej([%.6f, %.6f, %.6f, %.6f, %.6f, %.6f], v=%.4f, r=%.4f)\n' % tuple(config.joint_values + [velocity, radius])
@@ -74,10 +71,23 @@ class URScriptHelper(object):
 if __name__ == '__main__':
     from compas.robots import Configuration
 
-    ur = URScriptHelper('10.0.0.10', 9111)
+    proxy_ip, proxy_port = '10.0.0.99', 9111
+    ur_ip = '10.0.0.10'
+    ur = URScriptHelper(proxy_ip, proxy_port)
     configs = [
-        Configuration.from_revolute_values([1.5, 0, 0, 0, 1.5, 0]),
-        Configuration.from_revolute_values([1.5, 0, 0, 0, 1.0, 0])
+        Configuration.from_revolute_values([-0.336346, -1.81684, 1.79533, -1.53407, -1.56666, 1.22421]),
     ]
     script = ur.send_configurations(configs, velocity=0.01, radius=0.01)
     print(script)
+
+    """
+    script = ""
+    script += "def program():\n"
+    script += "\ttextmsg(\">> Entering program.\")\n"
+    script += "\ttextmsg(\"<< Exiting program.\")\n"
+    script += "end\n"
+    script += "program()\n\n\n"
+    print(script)
+    """
+    sock = ur.execute(ur_ip, script)
+    sock.close()
