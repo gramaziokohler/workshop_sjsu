@@ -116,10 +116,42 @@ def load_command_file(file):
     )
 
 
+class ExecutionDataHandler(object):
+    def __init__(self):
+        self.current_file = None
+
+    def watch_for_file(self, file, loop=None):
+        if not loop:
+            loop = asyncio.get_event_loop()
+        loop.call_later(1, self.watch_for_file, file, loop)
+        json_file = self.get_execution_path_from_file(file)
+
+        if not self.current_file or self.current_file != json_file: 
+            self.current_file = json_file
+            self.read_execution_data(json_file)
+            self.flat_data = None
+
+    def read_execution_data(self, json_file):
+        print(' [ ] Loading commands file...\r', end='', flush=True)
+        self.flat_data = load_command_file(json_file)
+        print(' [✓] Loaded {} frames/commands'.format(len(self.flat_data['frames'])))
+        print(' [✓] Execution file {}'.format(json_file))
+
+    def get_execution_path_from_file(self, file):
+        if not os.path.exists(file):
+            print(f' [!] Cannot find file={file}')
+            print('     Verify the file exists.')
+            sys.exit(1)
+
+        with io.open(file, 'r') as fp:
+            json_file = fp.readline()
+            return json_file
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Lightbrush proxy')
     parser.add_argument(
-        'file', type=str, help='light painting file containing robot points and colors')
+        'file', type=str, help='file containing a single line with the path to the json file of robot points and colors')
     parser.add_argument(
         '--ip', type=str, help='IP address of the lightbrush server. Leave empty for auto-detect')
     parser.add_argument(
@@ -131,9 +163,10 @@ if __name__ == '__main__':
     print('Lightbrush Proxy')
     print()
 
-    print(' [ ] Loading commands file...\r', end='', flush=True)
-    flat_data = load_command_file(args.file)
-    print(' [✓] Loaded {} frames/commands'.format(len(flat_data['frames'])))
+    execution_data = ExecutionDataHandler()
+    print(' [ ] Checking file...\r', end='', flush=True)
+    execution_data.watch_for_file(args.file)
+    print(' [✓] File monitoring enabled.\r', end='', flush=True)
 
     ip_address = get_current_ip_address()
     print(' [✓] Local IP address: {}'.format(ip_address))
@@ -170,4 +203,4 @@ if __name__ == '__main__':
         print(f', RGB: {r}, {g}, {b}, Brightness: {brightness}\r', end='', flush=True)
         session.get(f'http://{esp32_ip_address}/leds?rgb=[{r},{g},{b}]&brightness={brightness}', verify=False)
 
-    asyncio.run(start_server(robot_callback))
+    asyncio.get_event_loop().run_until_complete(start_server(robot_callback))
