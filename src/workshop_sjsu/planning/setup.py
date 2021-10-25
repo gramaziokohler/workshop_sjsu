@@ -1,23 +1,36 @@
 import os
-import compas_fab
+import compas
+from compas.robots import LocalPackageMeshLoader
+from compas.robots import RobotModel
+from compas.datastructures import Mesh
+
 from compas_fab.robots import Tool
 from compas_fab.robots import RobotSemantics
 from compas_fab.robots import PlanningScene
 from compas_fab.robots import CollisionMesh
-from compas_fab.backends import PyBulletClient
-from compas.datastructures import Mesh
+from compas_fab.robots import Robot
 
 from workshop_sjsu import DATA
 from workshop_sjsu.ur.kinematics.analytical_inverse_kinematics import UR5AnalyticalIK
 
+urdf_filename = os.path.join(DATA, "ur_e_description", "urdf", "ur5e_robot.urdf")
+srdf_filename = os.path.join(DATA, "ur5_e_moveit_config", "config", "ur5e.srdf")
+
+
+def UR5e():
+
+    model = RobotModel.from_urdf_file(urdf_filename)
+    semantics = RobotSemantics.from_srdf_file(srdf_filename, model)
+
+    loader = LocalPackageMeshLoader(DATA, 'ur_e_description')
+    model.load_geometry(loader)
+
+    robot = Robot(model, semantics=semantics)
+    return robot
+
 
 def sjsu_setup(client):
     tool = Tool.from_json(os.path.join(DATA, "tool.json"))
-
-    urdf_filename = compas_fab.get(
-        'universal_robot/ur_description/urdf/ur5.urdf')
-    srdf_filename = compas_fab.get(
-        'universal_robot/ur5_moveit_config/config/ur5.srdf')
 
     # TODO: convert to pybullet convex meshes?
 
@@ -39,6 +52,10 @@ def sjsu_setup(client):
     return robot, scene
 
 
-class Client(PyBulletClient):
-    def inverse_kinematics(self, *args, **kwargs):
-        return UR5AnalyticalIK(self)(*args, **kwargs)
+if not compas.IPY:
+
+    from compas_fab.backends import PyBulletClient
+
+    class Client(PyBulletClient):
+        def inverse_kinematics(self, *args, **kwargs):
+            return UR5AnalyticalIK(self)(*args, **kwargs)
