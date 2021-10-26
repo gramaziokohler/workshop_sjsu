@@ -40,9 +40,10 @@ def reduce_to_reachable(frames, connection_type='gui'):
                     #raise
                     solution = None
                     print("ValueError")
-                if not solution:
-                    break
-                else:
+                #if not solution:
+                #    break
+                #else:
+                if solution:
                     configurations_per_path.append(solution)
             else:
                 configurations.append(configurations_per_path)
