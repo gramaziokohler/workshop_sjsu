@@ -2,7 +2,8 @@ import argparse
 import io
 import json
 import math
-import os
+import sys
+
 import compas
 
 if __name__ == '__main__':
@@ -26,11 +27,19 @@ if __name__ == '__main__':
     if args.path_index:
         pass
     
+    path_index = int(args.path_index)
     for k in data.keys():
-        l = data[k][args.path_index][:]
-        n = math.ceil(len(l) / args.segments)
-        print(f'Splitting {k} in {args.segments} segments of {n} items')
-        output = [l[i:i + n] for i in range(0, len(l), n)]
-        data[k] = output
+        if path_index >= len(data[k]):
+            print(f'Invalid path index! Must be smaller than {len(data[k])}')
+            sys.exit(-1)
 
+        head = data[k][:path_index]
+        tail = data[k][path_index + 1:]
+        l = data[k].pop(path_index)[:]
+        n = math.ceil(len(l) / args.segments)
+        print(f'Splitting {k} in {args.segments} segments of {n} items each')
+        output = [l[i:i + n] for i in range(0, len(l), n)]
+        data[k] = head + output + tail
+
+    # print(data)
     compas.json_dump(data, args.file + '-split.json', pretty=True)
