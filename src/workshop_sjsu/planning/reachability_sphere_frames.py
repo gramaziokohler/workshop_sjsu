@@ -1,4 +1,5 @@
-from workshop_sjsu.reachability.reachability_map import ReachabilityMap
+from workshop_sjsu.planning.reachability_map import ReachabilityMap
+from workshop_sjsu.planning.setup import Client
 
 
 if __name__ == "__main__":
@@ -14,37 +15,33 @@ if __name__ == "__main__":
     from compas_fab.robots import PlanningScene
 
     from workshop_sjsu import DATA
-    from workshop_sjsu.ur.kinematics.analytical_inverse_kinematics import UR5AnalyticalIK
-    from workshop_sjsu.reachability.setup import setup
+    from workshop_sjsu.planning.setup import sjsu_setup
 
-    frames = compas.json_load(os.path.join(DATA, "sphere_frames.json"))
-    centers = compas.json_load(os.path.join(DATA, "sphere_centers.json"))
+    frames = compas.json_load(os.path.join(DATA, "reachability_sphere_input_frames.json"))
+    centers = compas.json_load(os.path.join(DATA, "reachability_sphere_input_centers.json"))
+
+    
 
     print(len(frames))
     print(len(centers))
     assert(len(frames) == len(centers))
 
-    filename = os.path.join(DATA, "reachability_sphere_frames_04.json")
+    filename = os.path.join(DATA, "reachability_sphere_frames_06.json")
 
-    class Client(PyBulletClient):
-        def inverse_kinematics(self, *args, **kwargs):
-            return UR5AnalyticalIK(self)(*args, **kwargs)
 
     ct = 'gui'
     # ct = 'direct'
     with Client(connection_type=ct) as client:
 
-        robot = setup(client)
+        robot, scene = sjsu_setup(client, camera=False)
 
         map = ReachabilityMap()
 
         counter = 0
         for center, frames_per_sphere in zip(centers, frames):
 
-            camera_mesh = Mesh.from_obj(os.path.join(DATA, "camera.obj"))
+            camera_mesh = Mesh.from_json(os.path.join(DATA, "camera.json"))
             camera_mesh.transform(Translation.from_vector(center))
-
-            scene = PlanningScene(robot)
             cm = CollisionMesh(camera_mesh, 'camera')
             scene.add_collision_mesh(cm)
 
