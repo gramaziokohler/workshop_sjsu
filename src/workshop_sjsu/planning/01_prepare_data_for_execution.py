@@ -28,7 +28,6 @@ def reduce_to_reachable(frames, connection_type='gui'):
         num_frames = sum([len(frames_per_path) for frames_per_path in frames])
 
         for i, frames_per_path in enumerate(frames):
-
             configurations_per_path = []
             for frame_tcf in frames_per_path:
                 frame0_t0cf = robot.attached_tool.from_tcf_to_t0cf([frame_tcf])[0]
@@ -37,13 +36,10 @@ def reduce_to_reachable(frames, connection_type='gui'):
                                                         "check_collision": True, "cull": False})
                     solution = configs[IK_IDX]
                 except ValueError:
-                    #raise
                     solution = None
-                    print("ValueError")
-                #if not solution:
-                #    break
-                #else:
-                if solution:
+                if not solution:
+                    break
+                else:
                     configurations_per_path.append(solution)
             else:
                 configurations.append(configurations_per_path)
@@ -108,14 +104,15 @@ def add_transition_between_paths_and_flatten(frames, gradients, colors, configur
 
                 # configurations_flattened
                 for frame_tcf in transition_frames:
-                    frame0_t0cf = robot.attached_tool.from_tcf_to_t0cf([frame_tcf])[
-                        0]
+                    frame0_t0cf = robot.attached_tool.from_tcf_to_t0cf([frame_tcf])[0]
                     configs = client.inverse_kinematics(robot, frame0_t0cf,
                                                         options={
                                                             "check_collision": True,
                                                             "cull": False}
                                                         )
                     solution = configs[IK_IDX]
+                    if not solution:
+                        raise ValueError("No solution for transition")
                     configurations_flattened.append(solution)
 
                 # path2
@@ -226,6 +223,12 @@ if __name__ == "__main__":
     #ct = 'direct'
     configurations, indices2keep = reduce_to_reachable(
         frames, connection_type=ct)
+    
+    for J in configurations:
+        for c in J:
+            if c is None:
+                print("1 here")
+
 
     # remove also from frames, gradients and colors
     frames = [frames[i] for i in indices2keep]
@@ -234,6 +237,10 @@ if __name__ == "__main__":
 
     F, G, C, J = add_transition_between_paths_and_flatten(
         frames, gradients, colors, configurations, connection_type=ct)
+    
+    for c in J:
+        if c is None:
+            print("here")
 
     J = make_configurations_smooth(J)
 
