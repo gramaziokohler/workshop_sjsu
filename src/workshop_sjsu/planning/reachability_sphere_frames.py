@@ -20,13 +20,16 @@ if __name__ == "__main__":
     frames = compas.json_load(os.path.join(DATA, "reachability_sphere_input_frames.json"))
     centers = compas.json_load(os.path.join(DATA, "reachability_sphere_input_centers.json"))
 
+    frames = compas.json_load(os.path.join(DATA, "reachability_sphere_input_frames_finetune.json"))
+    centers = compas.json_load(os.path.join(DATA, "reachability_sphere_input_centers_finetune.json"))
+
     
 
     print(len(frames))
     print(len(centers))
     assert(len(frames) == len(centers))
 
-    filename = os.path.join(DATA, "reachability_sphere_frames_06.json")
+    filename = os.path.join(DATA, "reachability_sphere_frames_07.json")
 
 
     ct = 'gui'

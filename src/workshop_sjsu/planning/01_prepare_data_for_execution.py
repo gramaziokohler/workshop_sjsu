@@ -59,10 +59,16 @@ def add_transition_between_paths_and_flatten(frames, gradients, colors, configur
     gradients_flattened = []
     colors_flattened = []
     configurations_flattened = []
-    velocities = []
-    radii = []
+    startends = [] # here we set start and end points to 1, rest is 0
 
     print(len(frames))
+
+    def create_startend(num):
+        array = [0 for _ in range(num)]
+        array[0] = 1
+        array[-1] = 1
+        return array
+
 
     with Client(connection_type=connection_type) as client:
         robot, _ = sjsu_setup(client)
@@ -73,13 +79,14 @@ def add_transition_between_paths_and_flatten(frames, gradients, colors, configur
             colors_flattened = colors[0]
             configurations_flattened = configurations[0]
 
+            startends = create_startend(len(frames_flattened))
+
         else:
             for i, (path1, path2) in enumerate(zip(frames[:-1], frames[1:])):
 
                 start_frame = path1[-1]
                 end_frame = path2[0]
-                transition_frames = create_transition_frames_on_sphere(
-                    start_frame, end_frame)
+                transition_frames = create_transition_frames_on_sphere(start_frame, end_frame)
 
                 # add another 2
                 # TODO: this can be improved by moving along the sphere to the point
@@ -94,6 +101,10 @@ def add_transition_between_paths_and_flatten(frames, gradients, colors, configur
                     gradients_flattened += gradients[i]
                     colors_flattened += colors[i]
                     configurations_flattened += configurations[i]
+
+                    startends += [0 for _ in range(len(frames_flattened))]
+                    startends[0] = 1
+                    startends[-1] = 1
 
                 # transition
                 frames_flattened += transition_frames  # [frame_s, frame_e]
