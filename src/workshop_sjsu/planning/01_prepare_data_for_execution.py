@@ -28,7 +28,6 @@ def reduce_to_reachable(frames, connection_type='gui'):
         num_frames = sum([len(frames_per_path) for frames_per_path in frames])
 
         for i, frames_per_path in enumerate(frames):
-
             configurations_per_path = []
             for frame_tcf in frames_per_path:
                 frame0_t0cf = robot.attached_tool.from_tcf_to_t0cf([frame_tcf])[0]
@@ -37,13 +36,10 @@ def reduce_to_reachable(frames, connection_type='gui'):
                                                         "check_collision": True, "cull": False})
                     solution = configs[IK_IDX]
                 except ValueError:
-                    #raise
                     solution = None
-                    print("ValueError")
-                #if not solution:
-                #    break
-                #else:
-                if solution:
+                if not solution:
+                    break
+                else:
                     configurations_per_path.append(solution)
             else:
                 configurations.append(configurations_per_path)
@@ -63,10 +59,16 @@ def add_transition_between_paths_and_flatten(frames, gradients, colors, configur
     gradients_flattened = []
     colors_flattened = []
     configurations_flattened = []
-    velocities = []
-    radii = []
+    startends = [] # here we set start and end points to 1, rest is 0
 
     print(len(frames))
+
+    def create_startend(num):
+        array = [0 for _ in range(num)]
+        array[0] = 1
+        array[-1] = 1
+        return array
+
 
     with Client(connection_type=connection_type) as client:
         robot, _ = sjsu_setup(client)
@@ -77,13 +79,14 @@ def add_transition_between_paths_and_flatten(frames, gradients, colors, configur
             colors_flattened = colors[0]
             configurations_flattened = configurations[0]
 
+            startends = create_startend(len(frames_flattened))
+
         else:
             for i, (path1, path2) in enumerate(zip(frames[:-1], frames[1:])):
 
                 start_frame = path1[-1]
                 end_frame = path2[0]
-                transition_frames = create_transition_frames_on_sphere(
-                    start_frame, end_frame)
+                transition_frames = create_transition_frames_on_sphere(start_frame, end_frame)
 
                 # add another 2
                 # TODO: this can be improved by moving along the sphere to the point
@@ -99,6 +102,10 @@ def add_transition_between_paths_and_flatten(frames, gradients, colors, configur
                     colors_flattened += colors[i]
                     configurations_flattened += configurations[i]
 
+                    startends += [0 for _ in range(len(frames_flattened))]
+                    startends[0] = 1
+                    startends[-1] = 1
+
                 # transition
                 frames_flattened += transition_frames  # [frame_s, frame_e]
                 gradients_flattened += [
@@ -108,14 +115,15 @@ def add_transition_between_paths_and_flatten(frames, gradients, colors, configur
 
                 # configurations_flattened
                 for frame_tcf in transition_frames:
-                    frame0_t0cf = robot.attached_tool.from_tcf_to_t0cf([frame_tcf])[
-                        0]
+                    frame0_t0cf = robot.attached_tool.from_tcf_to_t0cf([frame_tcf])[0]
                     configs = client.inverse_kinematics(robot, frame0_t0cf,
                                                         options={
                                                             "check_collision": True,
                                                             "cull": False}
                                                         )
                     solution = configs[IK_IDX]
+                    if not solution:
+                        raise ValueError("No solution for transition")
                     configurations_flattened.append(solution)
 
                 # path2
@@ -226,6 +234,12 @@ if __name__ == "__main__":
     #ct = 'direct'
     configurations, indices2keep = reduce_to_reachable(
         frames, connection_type=ct)
+    
+    for J in configurations:
+        for c in J:
+            if c is None:
+                print("1 here")
+
 
     # remove also from frames, gradients and colors
     frames = [frames[i] for i in indices2keep]
@@ -234,6 +248,10 @@ if __name__ == "__main__":
 
     F, G, C, J = add_transition_between_paths_and_flatten(
         frames, gradients, colors, configurations, connection_type=ct)
+    
+    for c in J:
+        if c is None:
+            print("here")
 
     J = make_configurations_smooth(J)
 

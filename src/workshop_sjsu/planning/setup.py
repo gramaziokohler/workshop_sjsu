@@ -30,7 +30,7 @@ def UR5e():
     return robot
 
 
-def sjsu_setup(client):
+def sjsu_setup(client, camera=True):
     tool = Tool.from_json(os.path.join(DATA, "tool.json"))
 
     # TODO: convert to pybullet convex meshes?
@@ -46,9 +46,10 @@ def sjsu_setup(client):
     robot.attach_tool(tool)
     scene = PlanningScene(robot)
 
-    camera_mesh = Mesh.from_json(os.path.join(DATA, "camera_in_position.json"))
-    cm = CollisionMesh(camera_mesh, 'camera')
-    scene.add_collision_mesh(cm)
+    if camera:
+        camera_mesh = Mesh.from_json(os.path.join(DATA, "camera_in_position.json"))
+        cm = CollisionMesh(camera_mesh, 'camera')
+        scene.add_collision_mesh(cm)
 
     return robot, scene
 

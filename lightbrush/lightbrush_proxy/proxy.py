@@ -205,18 +205,18 @@ if __name__ == '__main__':
         x = 1.0
         y = 1.0
         curve = Bezier([[0.0, 0.0, 0.0], [x, 0.0, 0.0], [y, 1.0, 0.0], [1., 1., 0]])
-        MULT = 0.6
+        MULT = 0.2
         vmapped = curve.point(value * MULT).y
         #vmapped *= MULT
         return vmapped
 
     def robot_callback(value):
         r, g, b = [int(c * 255) for c in execution_data.flat_data['colors'][value]]
-        #vmapped = map_gradient_value(execution_data.flat_data['gradients'][value])
-        vmapped = execution_data.flat_data['gradients'][value] * 0.6
+        vmapped = map_gradient_value(execution_data.flat_data['gradients'][value])
+        #vmapped = execution_data.flat_data['gradients'][value] * 0.1
         brightness = int(vmapped * 255)
         print(f', RGB: {r}, {g}, {b}, Brightness: {brightness}\r', end='', flush=True)
         session.get(f'http://{esp32_ip_address}/leds?rgb=[{r},{g},{b}]&brightness={brightness}', verify=False)
 
     asyncio.get_event_loop().run_until_complete(start_server(robot_callback))
-    # python lightbrush\lightbrush_proxy\proxy.py --ip 10.0.0.20 C:\Users\rustr\workspace\teaching\workshop_sjsu\src\workshop_sjsu\data\example04_execution.json 
+    # python lightbrush\lightbrush_proxy\proxy.py --ip 10.0.0.20 C:\Users\rustr\workspace\teaching\workshop_sjsu\src\workshop_sjsu\data\current_file.txt

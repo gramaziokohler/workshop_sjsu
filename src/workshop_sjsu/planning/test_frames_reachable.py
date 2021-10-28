@@ -8,13 +8,10 @@ from compas_fab.backends.pybullet import LOG
 
 from workshop_sjsu.planning.setup import Client
 from workshop_sjsu.planning.setup import sjsu_setup
-from workshop_sjsu.planning.utilities import translate_and_create_frames
-from workshop_sjsu.planning.utilities import create_transition_frames_on_sphere
 from workshop_sjsu.planning import IK_IDX
 from workshop_sjsu import DATA
 
 LOG.setLevel(logging.ERROR)
-
 
 
 def reduce_to_reachable(frames, connection_type='gui'):
@@ -30,6 +27,7 @@ def reduce_to_reachable(frames, connection_type='gui'):
 
         configurations = []
         frames_reachable = []
+        frames_not_reachable = []
 
         for frame_tcf in frames:
             frame0_t0cf = robot.attached_tool.from_tcf_to_t0cf([frame_tcf])[0]
@@ -42,11 +40,13 @@ def reduce_to_reachable(frames, connection_type='gui'):
             if solution:
                 configurations.append(solution)
                 frames_reachable.append(frame_tcf)
-
+            else:
+                frames_not_reachable.append(frame_tcf)
+                
         num_configurations = len(configurations)
         print("Removing %i of %i frames, since they are not reachable." % (num_frames - num_configurations, num_frames))
 
-    return configurations, frames_reachable
+    return configurations, frames_reachable, frames_not_reachable
 
 
 def make_configurations_smooth(configurations):
@@ -101,12 +101,13 @@ if __name__ == "__main__":
     # 2. Reduce to only use buildable paths
     ct = 'gui'
     #ct = 'direct'
-    configurations, frames_reachable = reduce_to_reachable(frames, connection_type=ct)
+    configurations, frames_reachable, frames_not_reachable = reduce_to_reachable(frames, connection_type=ct)
 
     J = make_configurations_smooth(configurations)
 
     data = {}
     data['frames'] = frames_reachable
+    data['frames_not_reachable'] = frames_not_reachable
     data['configurations'] = J
 
     filepath = os.path.join(DATA, "%s_out.json" % NAME)
