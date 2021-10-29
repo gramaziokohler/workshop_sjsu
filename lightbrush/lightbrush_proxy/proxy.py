@@ -122,7 +122,10 @@ def load_command_file(file):
 class ExecutionDataHandler(object):
     def __init__(self):
         self.current_file = None
+        self.current_multiplier = None
         self.flat_data = None
+    
+
 
     def watch_for_file(self, file, loop=None):
         if not loop:
@@ -130,15 +133,25 @@ class ExecutionDataHandler(object):
         loop.call_later(1, self.watch_for_file, file, loop)
         json_file = self.get_execution_path_from_file(file)
 
-        if not self.current_file or self.current_file != json_file: 
+        if not self.current_multiplier: 
             self.current_file = json_file
             self.read_execution_data(json_file)
+            self.read_multiplier()
 
     def read_execution_data(self, json_file):
         print(' [ ] Loading commands file...\r', end='', flush=True)
         self.flat_data = load_command_file(json_file)
         print(' [✓] Loaded {} frames/commands'.format(len(self.flat_data['frames'])))
         print(' [✓] Execution file {}'.format(json_file))
+    
+    def read_multiplier(self):
+        # sorry Gonzalo, this is a quick hack
+        from workshop_sjsu import DATA
+        file = os.path.join(DATA, "current_multiplier.txt")
+        with io.open(file, 'r') as fp:
+            multiplier = float(fp.readline())
+            self.current_multiplier = multiplier
+            print(' [✓] Setting the multiplier to {}'.format(self.current_multiplier))
 
     def get_execution_path_from_file(self, file):
         if not os.path.exists(file):
@@ -205,9 +218,8 @@ if __name__ == '__main__':
         x = 1.0
         y = 1.0
         curve = Bezier([[0.0, 0.0, 0.0], [x, 0.0, 0.0], [y, 1.0, 0.0], [1., 1., 0]])
-        MULT = 0.2
+        MULT = execution_data.current_multiplier
         vmapped = curve.point(value * MULT).y
-        #vmapped *= MULT
         return vmapped
 
     def robot_callback(value):
@@ -220,3 +232,4 @@ if __name__ == '__main__':
 
     asyncio.get_event_loop().run_until_complete(start_server(robot_callback))
     # python lightbrush\lightbrush_proxy\proxy.py --ip 10.0.0.20 C:\Users\rustr\workspace\teaching\workshop_sjsu\src\workshop_sjsu\data\current_file.txt
+    # put in browser http://10.0.0.20/leds?rgb=[0,0,255]&brightness=200 to do it "by hand"
