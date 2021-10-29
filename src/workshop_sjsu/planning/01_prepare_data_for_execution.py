@@ -101,17 +101,13 @@ def add_transition_between_paths_and_flatten(frames, gradients, colors, configur
                     gradients_flattened += gradients[i]
                     colors_flattened += colors[i]
                     configurations_flattened += configurations[i]
-
-                    startends += [0 for _ in range(len(frames_flattened))]
-                    startends[0] = 1
-                    startends[-1] = 1
+                    startends += create_startend(len(path1))
 
                 # transition
                 frames_flattened += transition_frames  # [frame_s, frame_e]
-                gradients_flattened += [
-                    0 for _ in range(len(transition_frames))]
-                colors_flattened += [(0, 0, 0)
-                                     for _ in range(len(transition_frames))]
+                gradients_flattened += [0 for _ in range(len(transition_frames))]
+                colors_flattened += [(0, 0, 0) for _ in range(len(transition_frames))]
+                startends += create_startend(len(transition_frames))
 
                 # configurations_flattened
                 for frame_tcf in transition_frames:
@@ -131,6 +127,7 @@ def add_transition_between_paths_and_flatten(frames, gradients, colors, configur
                 gradients_flattened += gradients[i + 1]
                 colors_flattened += colors[i + 1]
                 configurations_flattened += configurations[i + 1]
+                startends += create_startend(len(path2))
 
     print("Now %d frames with transitions" % len(frames_flattened))
 
@@ -152,8 +149,9 @@ def add_transition_between_paths_and_flatten(frames, gradients, colors, configur
     gradients_flattened = add_offs(gradients_flattened, off=0, num=num)
     colors_flattened = add_offs(colors_flattened, off=(0, 0, 0), num=num)
     configurations_flattened = add_offs(configurations_flattened, off=None, num=num)
+    startends = add_offs(startends, off=0, num=num)
 
-    return frames_flattened, gradients_flattened, colors_flattened, configurations_flattened
+    return frames_flattened, gradients_flattened, colors_flattened, configurations_flattened, startends
 
 
 def make_configurations_smooth(configurations):
@@ -205,7 +203,9 @@ if __name__ == "__main__":
     NAME = "Juan Zavala Path"
     NAME = "Juan_2"
     NAME = "Milvia"
-    NAME = "Kayla"
+    NAME = "Sharleen"
+
+
 
     filepath = os.path.join(DATA, 'current_file.txt')
     with open(filepath, 'r') as f:
@@ -214,7 +214,7 @@ if __name__ == "__main__":
     basename = os.path.basename(current)
     name, ending = os.path.splitext(basename)
     name = name[:-len("_execution")]
-    
+
     filepath = os.path.join(os.path.dirname(current), name + ending)
 
 
@@ -246,8 +246,7 @@ if __name__ == "__main__":
     gradients = [gradients[i] for i in indices2keep]
     colors = [colors[i] for i in indices2keep]
 
-    F, G, C, J = add_transition_between_paths_and_flatten(
-        frames, gradients, colors, configurations, connection_type=ct)
+    F, G, C, J, S = add_transition_between_paths_and_flatten(frames, gradients, colors, configurations, connection_type=ct)
     
     for c in J:
         if c is None:
@@ -260,6 +259,7 @@ if __name__ == "__main__":
     data['gradients'] = G
     data['colors'] = C
     data['configurations'] = J
+    data['startends'] = S
 
     #filepath = os.path.join(DATA, "%s_execution.json" % NAME)
     compas.json_dump(data, current)

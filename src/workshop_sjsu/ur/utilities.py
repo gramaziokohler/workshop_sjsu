@@ -39,17 +39,22 @@ class URScriptHelper(object):
         script = self.template_pre + indented_script + URSCRIPT_TEMPLATE_POST.format(indent=INDENT)
         return script
 
-    def send_configurations(self, configurations, velocity, radius):
+    def send_configurations(self, configurations, velocity, radius, acceleration, startends=None):
         script = ""
         for i, config in enumerate(configurations):
             config = config.copy()
-            #config.joint_values[0] += math.radians(180)
-            #config.joint_values[2] += math.radians(360)
+
+            start_or_end = startends[i]
         
             if i == 0:
                 script += 'movej([%.6f, %.6f, %.6f, %.6f, %.6f, %.6f], v=%.4f, r=%.4f)\n' % tuple(config.joint_values + [velocity, radius])
             else:
-                script += 'movel([%.6f, %.6f, %.6f, %.6f, %.6f, %.6f], v=%.4f, r=%.4f)\n' % tuple(config.joint_values + [velocity, radius])
+                #script += 'movel([%.6f, %.6f, %.6f, %.6f, %.6f, %.6f], v=%.4f, r=%.4f)\n' % tuple(config.joint_values + [velocity, radius])
+                if not start_or_end:
+                    script += 'movel([%.6f, %.6f, %.6f, %.6f, %.6f, %.6f], v=%.4f, r=%.4f)\n' % tuple(config.joint_values + [velocity, radius])
+                else:
+                    script += 'movel([%.6f, %.6f, %.6f, %.6f, %.6f, %.6f], a=%.4f, v=%.4f)\n' % tuple(config.joint_values + [acceleration, velocity])
+
             script += 'socket_send_int(%i)\n' % i
             script += 'textmsg("%i")\n' % i
 
