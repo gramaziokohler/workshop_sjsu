@@ -45,8 +45,10 @@ students_fullname = {
 "Weihong": "Weihong Dong",
 }
 
+
+html_directory = r"G:\.shortcut-targets-by-id\1cODxRnNNE5G6dGUZDvD5ubjIwFsu6NDA\GKR SJSU Light Painting Workshop\08 Web"
 copy_from_directory = r"G:\.shortcut-targets-by-id\1cODxRnNNE5G6dGUZDvD5ubjIwFsu6NDA\GKR SJSU Light Painting Workshop\03 Imagery files — 360 Images to save"
-copy_to_directory = r"Z:\01_Projekte\320_Augmented_Lightpainting_SJSU\02_Bildmaterial\01_Bilder\img360_for_web"
+copy_to_directory = os.path.join(html_directory, "img360_for_web")
 
 
 for name, imagefile in students.items():
@@ -56,8 +58,6 @@ for name, imagefile in students.items():
         print(image)
         shutil.copyfile(image, imagepath)
 
-
-html_directory = r"C:\Users\rustr\Desktop\idl.ethz.ch\sjsu"
 
 html_template = '''<!DOCTYPE html>
 <html>
